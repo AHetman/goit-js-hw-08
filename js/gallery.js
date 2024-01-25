@@ -66,8 +66,9 @@ const images = [
 
 const ulGallery = document.querySelector('.gallery');
 
-const galleryLiElems = images.map(image => {
-  return `<li class="gallery-item">
+const galleryLiElems = images
+  .map(image => {
+    return `<li class="gallery-item">
   <a class="gallery-link" href="${image.original}">
     <img
       class="gallery-image"
@@ -77,22 +78,21 @@ const galleryLiElems = images.map(image => {
     />
   </a>
 </li>`;
-});
+  })
+  .join('');
 
-ulGallery.innerHTML = galleryLiElems.join('');
+ulGallery.innerHTML = galleryLiElems;
 
-const clickOnImg = document.querySelectorAll('.gallery-link');
-
-clickOnImg.forEach(link => {
-  link.addEventListener('click', e => {
+ulGallery.addEventListener('click', e => {
+  if (e.target === e.currentTarget) return;
+  else {
     e.preventDefault();
-    console.log(link.href);
-    showModal(link.href);
-  });
+    showModal(e);
+  }
 });
 
-function showModal(imageUrl) {
-  const modal = basicLightbox.create(`<img src="${imageUrl}">`, {
+function showModal(e) {
+  const modal = basicLightbox.create(`<img src="${e.target.dataset.source}">`, {
     onShow: instance => {
       document.addEventListener('keydown', onShowModalClose);
     },
@@ -104,7 +104,6 @@ function showModal(imageUrl) {
   modal.show();
 
   function onShowModalClose(e) {
-    console.log(e.code);
     if (e.code === 'Escape') {
       modal.close();
     }
